@@ -8,17 +8,14 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', { useNewUrlParser: true
   console.log('connected to mongodb');
 
   const db = client.db('TodoApp');
-     db.collection('Todos').find().count().then((count) => {
-    //     console.log('todos count:', count);
-    //   }, err => {
-    // console.log('error: ', err)
-    //   });
-    
-      db.collection('Users').find({name: 'Alya'}).toArray().then((users) => {
-        console.log('users:', users);
-      }, err => {
-    console.log('error: ', err)
-      });
+
+  db.collection('Todos').findOneAndDelete({text: 'go for potato'}).then((result) => {
+    console.log('result: ', result);
+  }, err => {
+console.log('error: ', err)
+  });
+
+
 
   //client.close();
 });
