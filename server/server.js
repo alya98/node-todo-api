@@ -1,3 +1,14 @@
+const env = process.env.NODE_ENV || 'development';
+console.log('env *****', env)
+
+if(env === 'development') {
+  process.env.PORT = 3000;
+  process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoApp';
+} else if (env === 'test') {
+  process.env.PORT = 3000;
+  process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoAppTest';
+}
+
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
 const express = require('express');
@@ -57,11 +68,22 @@ app.patch('/todos/:id', (req, res) => {
     body.completedAt = null;
   }
 
-  Todo.findByIdAndUpdate(id, {$set: body},{new: true}).then(todo => {
+  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then(todo => {
     if (!todo) res.status(404).send();
     res.send({todo})
   }).catch(e => res.status(400).send());
 });
+
+app.post('/users', (req, res) => {
+  const user =  new User(_.pick(req.body, ['email', 'password']));
+
+  user.save().then( () => {
+    return user.generateAuthToken()
+  }, err => {
+    res.status(400).send(err);
+  }).then(token => res.header('x-auth', token).send(user))
+console.log(req.body);
+})
 
 app.listen(port, () => {
   console.log('server is running on port ',  port)
