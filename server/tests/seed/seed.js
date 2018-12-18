@@ -42,7 +42,7 @@ const users = [{
     token: jwt.sign({_id: userOneId, access: 'auth'}, 'qwer1234').toString()
   }],
 }, {
-  _idL: userTwoId,
+  _id: userTwoId,
   email: 'artem@mail.ru',
   password: 'userTwoPass',
 }]
