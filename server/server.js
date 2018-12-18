@@ -13,6 +13,7 @@ const _ = require('lodash');
 const {ObjectID} = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 
 const { mongoose } = require('./db/mongoose')
 const { Todo } = require('./models/todo');
@@ -88,6 +89,14 @@ console.log(req.body);
 
 app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user)
+});
+
+app.post('/users/login', (req, res) => {
+  User.findByCredentials(req.body.email, req.body.password).then(user => {
+    return user.generateAuthToken().then(token => {
+      res.header('x-auth', token).send(user);
+    })
+  }).catch(e => res.status(400).send())
 })
 
 app.listen(port, () => {
